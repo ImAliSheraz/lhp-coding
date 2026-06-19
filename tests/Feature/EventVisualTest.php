@@ -50,7 +50,7 @@ it('registers an attendee and queues a confirmation email', function () {
     ])->assertRedirect();
 
     expect(EventAttendee::count())->toBe(1);
-    Mail::assertQueued(AttendeeRegisteredMail::class);
+    Mail::assertSent(AttendeeRegisteredMail::class);
 });
 
 it('renders visual pages with shared props', function () {

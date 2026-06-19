@@ -25,8 +25,8 @@ class EventAttendeeController extends Controller
         );
 
         if ($attendee->wasRecentlyCreated) {
-            Mail::to($attendee->email)->queue(new AttendeeRegisteredMail($event, $attendee));
-            Inertia::flash('toast', ['type' => 'success', 'message' => 'You are on the attendee list. Check your email for confirmation.']);
+            Mail::to($attendee->email)->send(new AttendeeRegisteredMail($event, $attendee));
+            Inertia::flash('toast', ['type' => 'success', 'message' => 'You are on the attendee list. A confirmation email has been sent.']);
         } else {
             Inertia::flash('toast', ['type' => 'info', 'message' => 'You are already registered for this event.']);
         }

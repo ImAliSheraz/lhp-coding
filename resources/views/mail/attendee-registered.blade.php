@@ -1,18 +1,16 @@
-# You're on the list for {{ $eventData['title'] }}
+<x-mail::message>
+# You're on the list!
 
 Hi{{ $attendee->name ? ' '.$attendee->name : '' }},
 
-Thanks for registering your interest in **{{ $eventData['title'] }}**.
+Thanks for registering for **{{ $eventData['title'] }}**. You're confirmed on the attendee list and we'll send reminders as the event gets closer.
 
-**When:** {{ \Carbon\Carbon::createFromTimestamp($eventData['starts_at'])->utc()->format('D, M j, Y g:i A') }} UTC
+@include('mail.partials.event-details')
 
-**Where:** {{ $eventData['location']['label'] }}
-
-We'll send reminders as the event gets closer.
-
-@component('mail::button', ['url' => url('/events/'.$event->id)])
-View event
-@endcomponent
+<x-mail::button :url="url('/events/'.$event->id)">
+View event details
+</x-mail::button>
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ config('mail.from.name', config('app.name')) }}
+</x-mail::message>

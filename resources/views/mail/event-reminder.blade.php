@@ -1,20 +1,24 @@
+<x-mail::message>
 @if ($window === '3d')
 # {{ $eventData['title'] }} is in 3 days
-
-You're registered for **{{ $eventData['title'] }}**. It starts in about three days.
 @else
 # {{ $eventData['title'] }} is tomorrow
-
-You're registered for **{{ $eventData['title'] }}**. It starts in about 24 hours.
 @endif
 
-**When:** {{ \Carbon\Carbon::createFromTimestamp($eventData['starts_at'])->utc()->format('D, M j, Y g:i A') }} UTC
+Hi{{ $attendee->name ? ' '.$attendee->name : '' }},
 
-**Where:** {{ $eventData['location']['label'] }}
+@if ($window === '3d')
+This is a friendly reminder that you're registered for **{{ $eventData['title'] }}**, starting in about three days.
+@else
+This is a friendly reminder that **{{ $eventData['title'] }}** starts in about 24 hours.
+@endif
 
-@component('mail::button', ['url' => url('/events/'.$event->id)])
-View event
-@endcomponent
+@include('mail.partials.event-details')
+
+<x-mail::button :url="url('/events/'.$event->id)">
+View event details
+</x-mail::button>
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ config('mail.from.name', config('app.name')) }}
+</x-mail::message>

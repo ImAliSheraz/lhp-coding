@@ -6,13 +6,12 @@ use App\Http\Resources\EventVisualResource;
 use App\Models\Event;
 use App\Models\EventAttendee;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AttendeeRegisteredMail extends Mailable implements ShouldQueue
+class AttendeeRegisteredMail extends Mailable
 {
     use Queueable, SerializesModels;
 
