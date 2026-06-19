@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { ArrowRight } from '@lucide/vue';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import EventImageCarousel from '@/components/events/EventImageCarousel.vue';
 import { formatEventDateTime } from '@/lib/eventDate';
@@ -12,7 +14,7 @@ defineProps<{
 </script>
 
 <template>
-    <Card class="overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <Card class="flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <div class="aspect-[16/10]">
             <EventImageCarousel :images="event.images" :alt="event.title" />
         </div>
@@ -27,9 +29,14 @@ defineProps<{
             <p>{{ formatEventDateTime(event.starts_at) }}</p>
             <p class="text-muted-foreground">{{ event.location.label }}</p>
         </CardContent>
-        <CardFooter class="justify-between text-xs text-muted-foreground">
-            <span>{{ event.attendee_count ?? 0 }} attending</span>
-            <Link :href="`/events/${event.id}`" class="text-primary hover:underline">Details</Link>
+        <CardFooter class="mt-auto flex-col gap-3 border-t bg-muted/30 pt-4">
+            <span class="w-full text-xs text-muted-foreground">{{ event.attendee_count ?? 0 }} attending</span>
+            <Button as-child class="w-full">
+                <Link :href="`/events/${event.id}`" class="gap-2">
+                    View details
+                    <ArrowRight class="h-4 w-4" />
+                </Link>
+            </Button>
         </CardFooter>
     </Card>
 </template>
