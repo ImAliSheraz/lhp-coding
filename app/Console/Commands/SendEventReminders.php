@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Mail\EventReminderMail;
 use App\Models\Event;
 use App\Models\EventAttendee;
+use Carbon\CarbonInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 class SendEventReminders extends Command
@@ -23,7 +23,7 @@ class SendEventReminders extends Command
         return self::SUCCESS;
     }
 
-    private function sendWindow(string $window, Carbon $day, string $flag): void
+    private function sendWindow(string $window, CarbonInterface $day, string $flag): void
     {
         $events = Event::query()
             ->where('status', 'published')
