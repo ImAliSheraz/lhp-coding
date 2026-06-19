@@ -1,30 +1,62 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import AttendeeForm from '@/components/events/AttendeeForm.vue';
+import EventImageCarousel from '@/components/events/EventImageCarousel.vue';
+import { Badge } from '@/components/ui/badge';
+import { formatEventDateTime } from '@/lib/eventDate';
+import type { EventVisual } from '@/types/events';
 
 interface EventDetail {
     id: string;
     type: string;
     status: string;
-    created_time: number | null;
-    latitude: number | null;
-    longitude: number | null;
     payload: Record<string, unknown>;
+    attendees_count?: number;
 }
 
-const props = defineProps<{ event: EventDetail }>();
-
-const prettyPayload = computed(() => JSON.stringify(props.event.payload, null, 2));
+defineProps<{
+    event: EventDetail;
+    display: EventVisual;
+}>();
 </script>
 
 <template>
-    <Head :title="`Event ${event.id}`" />
+    <Head :title="display.title" />
 
-    <div class="flex flex-col gap-4 p-4">
+    <div class="mx-auto flex max-w-4xl flex-col gap-6 p-4 md:p-6">
         <Link href="/events" class="text-sm text-primary hover:underline">← Back to events</Link>
 
-        <h1 class="text-lg font-semibold">Event {{ event.id }}</h1>
+        <div class="overflow-hidden rounded-2xl border">
+            <div class="aspect-[21/9]">
+                <EventImageCarousel :images="display.images" :alt="display.title" />
+            </div>
+        </div>
 
-        <pre class="overflow-x-auto rounded-lg border p-4 text-xs">{{ prettyPayload }}</pre>
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+                <h1 class="text-3xl font-semibold">{{ display.title }}</h1>
+                <p class="mt-2 text-muted-foreground">{{ display.description }}</p>
+            </div>
+            <div class="flex gap-2">
+                <Badge>{{ display.type }}</Badge>
+                <Badge variant="outline">{{ event.status }}</Badge>
+            </div>
+        </div>
+
+        <div class="grid gap-4 rounded-xl border bg-card p-4 sm:grid-cols-2">
+            <div>
+                <p class="text-xs uppercase text-muted-foreground">When</p>
+                <p class="font-medium">{{ formatEventDateTime(display.starts_at) }}</p>
+                <p class="mt-1 text-xs text-muted-foreground">Times shown in your local timezone</p>
+            </div>
+            <div>
+                <p class="text-xs uppercase text-muted-foreground">Where</p>
+                <p class="font-medium">{{ display.location.label }}</p>
+            </div>
+        </div>
+
+        <p class="text-sm text-muted-foreground">{{ event.attendees_count ?? 0 }} people registered</p>
+
+        <AttendeeForm :event-id="event.id" />
     </div>
 </template>
