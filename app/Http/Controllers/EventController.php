@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EventVisualResource;
 use App\Models\Event;
+use App\Services\LocationResolver;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -35,13 +38,72 @@ class EventController extends Controller
         ]);
     }
 
+    public function visualOne(): Response
+    {
+        return $this->renderVisualPage('Events/VisualOne');
+    }
+
+    public function visualTwo(): Response
+    {
+        return $this->renderVisualPage('Events/VisualTwo');
+    }
+
+    public function visualData(Request $request): JsonResponse
+    {
+        $query = $this->visualQuery($request);
+
+        if (Schema::hasTable('event_attendees')) {
+            $query->withCount('attendees');
+        }
+
+        $events = $query
+            ->paginate((int) $request->input('per_page', 24))
+            ->withQueryString();
+
+        return response()->json([
+            'data' => EventVisualResource::collection($events->items())->resolve(),
+            'current_page' => $events->currentPage(),
+            'last_page' => $events->lastPage(),
+            'total' => $events->total(),
+        ]);
+    }
+
     public function show(Event $event): Response
     {
         $event->load('user');
 
+        if (Schema::hasTable('event_attendees')) {
+            $event->loadCount('attendees');
+        }
+
         return Inertia::render('Events/Show', [
             'event' => $event,
+            'display' => (new EventVisualResource($event))->resolve(),
         ]);
+    }
+
+    private function renderVisualPage(string $page): Response
+    {
+        return Inertia::render($page, [
+            'cities' => LocationResolver::cities(),
+            'filters' => ['from' => '', 'to' => '', 'city' => ''],
+        ]);
+    }
+
+    private function visualQuery(Request $request)
+    {
+        return Event::query()
+            ->where('status', 'published')
+            ->when($request->input('from'), function ($query, string $from): void {
+                $query->where('created_time', '>=', strtotime($from));
+            })
+            ->when($request->input('to'), function ($query, string $to): void {
+                $query->where('created_time', '<=', strtotime($to.' 23:59:59'));
+            })
+            ->when($request->input('city'), function ($query, string $city): void {
+                LocationResolver::applyCityFilter($query, $city);
+            })
+            ->orderBy('created_time');
     }
 
     /**
