@@ -14,6 +14,8 @@ use Inertia\Response;
 
 class EventController extends Controller
 {
+    private const DEFAULT_WINDOW_DAYS = 30;
+
     public function index(Request $request): Response
     {
         return Inertia::render('Events/Index', [
@@ -50,13 +52,7 @@ class EventController extends Controller
 
     public function visualData(Request $request): JsonResponse
     {
-        $query = $this->visualQuery($request);
-
-        if (Schema::hasTable('event_attendees')) {
-            $query->withCount('attendees');
-        }
-
-        $events = $query
+        $events = $this->visualQuery($request)
             ->paginate((int) $request->input('per_page', 24))
             ->withQueryString();
 
@@ -84,26 +80,51 @@ class EventController extends Controller
 
     private function renderVisualPage(string $page): Response
     {
+        [$from, $to] = $this->defaultDateRange();
+
         return Inertia::render($page, [
             'cities' => LocationResolver::cities(),
-            'filters' => ['from' => '', 'to' => '', 'city' => ''],
+            'filters' => ['from' => $from, 'to' => $to, 'city' => ''],
         ]);
     }
 
     private function visualQuery(Request $request)
     {
+        [$from, $to] = $this->resolveDateRange($request);
+
         return Event::query()
+            ->select(['id', 'type', 'status', 'created_time', 'latitude', 'longitude', 'payload'])
             ->where('status', 'published')
-            ->when($request->input('from'), function ($query, string $from): void {
-                $query->where('created_time', '>=', strtotime($from));
-            })
-            ->when($request->input('to'), function ($query, string $to): void {
-                $query->where('created_time', '<=', strtotime($to.' 23:59:59'));
-            })
+            ->where('created_time', '>=', strtotime($from))
+            ->where('created_time', '<=', strtotime($to.' 23:59:59'))
             ->when($request->input('city'), function ($query, string $city): void {
                 LocationResolver::applyCityFilter($query, $city);
             })
             ->orderBy('created_time');
+    }
+
+    /** @return array{0: string, 1: string} */
+    private function resolveDateRange(Request $request): array
+    {
+        if ($request->filled('from') || $request->filled('to')) {
+            [$defaultFrom, $defaultTo] = $this->defaultDateRange();
+
+            return [
+                $request->input('from', $defaultFrom),
+                $request->input('to', $defaultTo),
+            ];
+        }
+
+        return $this->defaultDateRange();
+    }
+
+    /** @return array{0: string, 1: string} */
+    private function defaultDateRange(): array
+    {
+        return [
+            date('Y-m-d'),
+            date('Y-m-d', strtotime('+'.self::DEFAULT_WINDOW_DAYS.' days')),
+        ];
     }
 
     /**

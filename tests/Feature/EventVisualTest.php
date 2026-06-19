@@ -38,7 +38,7 @@ it('returns enriched visual event data with filters', function () {
         ->assertJsonCount(2, 'data.0.images');
 });
 
-it('registers an attendee and queues a confirmation email', function () {
+it('registers an attendee and sends a confirmation email', function () {
     Mail::fake();
 
     $user = User::factory()->create();
