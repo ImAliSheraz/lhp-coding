@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Event placeholder">
+  <defs>
+    <linearGradient id="g2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g2)"/>
+  <rect x="500" y="80" width="220" height="220" rx="24" fill="#ffffff22"/>
+  <text x="40" y="420" fill="#fff" font-family="system-ui,sans-serif" font-size="42" font-weight="700">Festival</text>
+</svg>

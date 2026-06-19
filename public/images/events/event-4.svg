@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Event placeholder">
+  <defs>
+    <linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g4)"/>
+  <circle cx="640" cy="250" r="110" fill="#ffffff18"/>
+  <text x="40" y="420" fill="#fff" font-family="system-ui,sans-serif" font-size="42" font-weight="700">Conference</text>
+</svg>

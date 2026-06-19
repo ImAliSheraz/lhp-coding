@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Event placeholder">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g1)"/>
+  <circle cx="620" cy="120" r="80" fill="#ffffff22"/>
+  <text x="40" y="420" fill="#fff" font-family="system-ui,sans-serif" font-size="42" font-weight="700">Live Event</text>
+</svg>
