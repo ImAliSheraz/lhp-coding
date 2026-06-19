@@ -13,7 +13,16 @@ const props = defineProps<{
     filters: VisualFilters;
 }>();
 
-const { filters, events, total, loading, hasLoadedOnce, error, loadMore, applyFilters } = useEventVisuals(props.filters, 40);
+const {
+    filters,
+    events,
+    total,
+    loading,
+    hasLoadedOnce,
+    error,
+    loadMore,
+    applyFilters,
+} = useEventVisuals(props.filters, 40);
 
 const sentinel = ref<HTMLElement | null>(null);
 let observer: IntersectionObserver | null = null;
@@ -60,29 +69,48 @@ onBeforeUnmount(() => observer?.disconnect());
         <div>
             <h1 class="text-2xl font-semibold">Event Visual 2</h1>
             <p class="text-sm text-muted-foreground">
-                Timeline browse — {{ total?.toLocaleString() ?? '…' }} matching events
+                Timeline browse — {{ total?.toLocaleString() ?? '…' }} matching
+                events
             </p>
         </div>
 
-        <EventFilters v-model:filters="filters" :cities="cities" @apply="applyFilters" />
+        <EventFilters
+            v-model:filters="filters"
+            :cities="cities"
+            @apply="applyFilters"
+        />
 
-        <div v-if="error" class="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+        <div
+            v-if="error"
+            class="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
+        >
             {{ error }}
         </div>
 
-        <div v-else-if="empty" class="rounded-xl border border-dashed p-10 text-center text-muted-foreground">
+        <div
+            v-else-if="empty"
+            class="rounded-xl border border-dashed p-10 text-center text-muted-foreground"
+        >
             No events match these filters.
         </div>
 
         <div v-else class="space-y-8">
-            <section v-for="[day, dayEvents] in groupedEvents" :key="day" class="space-y-4">
+            <section
+                v-for="[day, dayEvents] in groupedEvents"
+                :key="day"
+                class="space-y-4"
+            >
                 <h2
-                    class="sticky top-0 z-10 bg-background/90 py-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur"
+                    class="sticky top-0 z-10 bg-background/90 py-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase backdrop-blur"
                 >
                     {{ day }}
                 </h2>
                 <div class="space-y-4 border-l border-border pl-4">
-                    <EventTimelineItem v-for="event in dayEvents" :key="event.id" :event="event" />
+                    <EventTimelineItem
+                        v-for="event in dayEvents"
+                        :key="event.id"
+                        :event="event"
+                    />
                 </div>
             </section>
             <Skeleton v-if="loading" class="h-28 rounded-xl" />

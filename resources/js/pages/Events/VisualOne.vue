@@ -12,7 +12,16 @@ const props = defineProps<{
     filters: VisualFilters;
 }>();
 
-const { filters, events, total, loading, hasLoadedOnce, error, loadMore, applyFilters } = useEventVisuals(props.filters, 24);
+const {
+    filters,
+    events,
+    total,
+    loading,
+    hasLoadedOnce,
+    error,
+    loadMore,
+    applyFilters,
+} = useEventVisuals(props.filters, 24);
 
 const sentinel = ref<HTMLElement | null>(null);
 let observer: IntersectionObserver | null = null;
@@ -45,16 +54,29 @@ onBeforeUnmount(() => observer?.disconnect());
     <div class="flex flex-col gap-6 p-4 md:p-6">
         <div>
             <h1 class="text-2xl font-semibold">Event Visual 1</h1>
-            <p class="text-sm text-muted-foreground">Card grid browse — {{ total?.toLocaleString() ?? '…' }} published events</p>
+            <p class="text-sm text-muted-foreground">
+                Card grid browse —
+                {{ total?.toLocaleString() ?? '…' }} published events
+            </p>
         </div>
 
-        <EventFilters v-model:filters="filters" :cities="cities" @apply="applyFilters" />
+        <EventFilters
+            v-model:filters="filters"
+            :cities="cities"
+            @apply="applyFilters"
+        />
 
-        <div v-if="error" class="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+        <div
+            v-if="error"
+            class="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
+        >
             {{ error }}
         </div>
 
-        <div v-else-if="empty" class="rounded-xl border border-dashed p-10 text-center text-muted-foreground">
+        <div
+            v-else-if="empty"
+            class="rounded-xl border border-dashed p-10 text-center text-muted-foreground"
+        >
             No events match these filters.
         </div>
 
@@ -63,7 +85,7 @@ onBeforeUnmount(() => observer?.disconnect());
                 v-for="(event, index) in events"
                 :key="event.id"
                 :event="event"
-                class="animate-in fade-in slide-in-from-bottom-2 duration-500"
+                class="animate-in duration-500 fade-in slide-in-from-bottom-2"
                 :style="{ animationDelay: `${Math.min(index, 8) * 40}ms` }"
             />
             <template v-if="loading">

@@ -11,7 +11,9 @@ export function useEventVisuals(initialFilters: VisualFilters, perPage = 24) {
     const hasLoadedOnce = ref(false);
     const error = ref<string | null>(null);
 
-    const hasMore = computed(() => lastPage.value === null || page.value < lastPage.value);
+    const hasMore = computed(
+        () => lastPage.value === null || page.value < lastPage.value,
+    );
 
     async function loadMore() {
         if (loading.value || !hasMore.value) {
@@ -26,14 +28,25 @@ export function useEventVisuals(initialFilters: VisualFilters, perPage = 24) {
             per_page: String(perPage),
         });
 
-        if (filters.from) params.set('from', filters.from);
-        if (filters.to) params.set('to', filters.to);
-        if (filters.city) params.set('city', filters.city);
+        if (filters.from) {
+            params.set('from', filters.from);
+        }
+
+        if (filters.to) {
+            params.set('to', filters.to);
+        }
+
+        if (filters.city) {
+            params.set('city', filters.city);
+        }
 
         try {
-            const response = await fetch(`/events/visual-data?${params.toString()}`, {
-                headers: { Accept: 'application/json' },
-            });
+            const response = await fetch(
+                `/events/visual-data?${params.toString()}`,
+                {
+                    headers: { Accept: 'application/json' },
+                },
+            );
 
             if (!response.ok) {
                 throw new Error(`Could not load events (${response.status})`);
@@ -47,7 +60,8 @@ export function useEventVisuals(initialFilters: VisualFilters, perPage = 24) {
             total.value = payload.total;
             hasLoadedOnce.value = true;
         } catch (e) {
-            error.value = e instanceof Error ? e.message : 'Could not load events';
+            error.value =
+                e instanceof Error ? e.message : 'Could not load events';
             hasLoadedOnce.value = true;
         } finally {
             loading.value = false;
@@ -60,6 +74,7 @@ export function useEventVisuals(initialFilters: VisualFilters, perPage = 24) {
         lastPage.value = null;
         total.value = null;
         hasLoadedOnce.value = false;
+
         return loadMore();
     }
 

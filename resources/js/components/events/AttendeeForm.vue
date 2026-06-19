@@ -22,10 +22,15 @@ function submit() {
 </script>
 
 <template>
-    <form class="space-y-3 rounded-xl border bg-card p-4" @submit.prevent="submit">
+    <form
+        class="space-y-3 rounded-xl border bg-card p-4"
+        @submit.prevent="submit"
+    >
         <div>
             <h2 class="text-base font-semibold">Register interest</h2>
-            <p class="text-sm text-muted-foreground">Join the attendee list and receive email updates.</p>
+            <p class="text-sm text-muted-foreground">
+                Join the attendee list and receive email updates.
+            </p>
         </div>
         <div class="grid gap-3 sm:grid-cols-2">
             <div class="space-y-1">
@@ -34,10 +39,20 @@ function submit() {
             </div>
             <div class="space-y-1">
                 <Label for="email">Email</Label>
-                <Input id="email" v-model="form.email" type="email" required autocomplete="email" />
-                <p v-if="form.errors.email" class="text-xs text-destructive">{{ form.errors.email }}</p>
+                <Input
+                    id="email"
+                    v-model="form.email"
+                    type="email"
+                    required
+                    autocomplete="email"
+                />
+                <p v-if="form.errors.email" class="text-xs text-destructive">
+                    {{ form.errors.email }}
+                </p>
             </div>
         </div>
-        <Button type="submit" :disabled="form.processing">Join attendee list</Button>
+        <Button type="submit" :disabled="form.processing"
+            >Join attendee list</Button
+        >
     </form>
 </template>
